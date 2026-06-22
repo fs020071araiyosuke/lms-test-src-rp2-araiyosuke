@@ -38,9 +38,9 @@ public class Case02 {
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
 
-		WebDriverUtils.goTo("http://localhost:8080/lms/");
-
+		WebDriverUtils.webDriver.get("http://localhost:8080/lms/");
 		assertEquals("ログイン | LMS", WebDriverUtils.webDriver.getTitle());
+		WebDriverUtils.getEvidence(this);
 	}
 
 	@Test

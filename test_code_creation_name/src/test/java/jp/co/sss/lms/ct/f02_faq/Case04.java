@@ -37,10 +37,9 @@ public class Case04 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
-
-		WebDriverUtils.goTo("http://localhost:8080/lms/");
-
+		WebDriverUtils.webDriver.get("http://localhost:8080/lms/");
 		assertEquals("ログイン | LMS", WebDriverUtils.webDriver.getTitle());
+		WebDriverUtils.getEvidence(this);
 	}
 
 	@Test
@@ -52,22 +51,17 @@ public class Case04 {
 		By pwInput = By.id("password");
 		By loginButton = By.cssSelector("input[type='submit']");
 
-		// 入力欄が表示されるまで待機
 		WebDriverUtils.visibilityTimeout(idInput, 5);
 
-		// 要素取得
 		WebElement idElem = WebDriverUtils.webDriver.findElement(idInput);
 		WebElement pwElem = WebDriverUtils.webDriver.findElement(pwInput);
 		WebElement loginBtnElem = WebDriverUtils.webDriver.findElement(loginButton);
 
-		// ログイン
 		idElem.sendKeys("StudentAA01");
 		pwElem.sendKeys("Yousuke6");
 		loginBtnElem.click();
 
-		// コース詳細画面へ遷移
-		WebDriverUtils.goTo("http://localhost:8080/lms/course/detail");
-
+		WebDriverUtils.webDriver.get("http://localhost:8080/lms/course/detail");
 		assertEquals("コース詳細 | LMS", WebDriverUtils.webDriver.getTitle());
 	}
 
@@ -79,41 +73,47 @@ public class Case04 {
 		By functionTab = By.cssSelector("li.dropdown > a");
 		By helpButton = By.cssSelector("a[href='/lms/help']");
 
-		// メニュー表示待ち
 		WebDriverUtils.visibilityTimeout(functionTab, 5);
 
-		// 要素取得
 		WebElement functionTabElem = WebDriverUtils.webDriver.findElement(functionTab);
 		functionTabElem.click();
 
 		WebElement helpButtonElem = WebDriverUtils.webDriver.findElement(helpButton);
 		helpButtonElem.click();
 
-		// ヘルプ画面へ遷移
-		WebDriverUtils.goTo("http://localhost:8080/lms/help");
-
+		WebDriverUtils.webDriver.get("http://localhost:8080/lms/help");
 		assertEquals("ヘルプ | LMS", WebDriverUtils.webDriver.getTitle());
 	}
 
 	@Test
 	@Order(4)
-	@DisplayName("テスト04 「よくある質問」リンクからよくある質問画面を開く")
+	@DisplayName("テスト04 「よくある質問」リンクを別タブで開く")
 	void test04() {
 
 		By faqLink = By.cssSelector("a[href='/lms/faq']");
 
-		// FAQリンク表示待ち
 		WebDriverUtils.visibilityTimeout(faqLink, 5);
 
+		// 現在のタブを記録
+		String originalTab = WebDriverUtils.webDriver.getWindowHandle();
+
+		// FAQリンクをクリック（別タブで開く）
 		WebElement faqLinkElem = WebDriverUtils.webDriver.findElement(faqLink);
 		faqLinkElem.click();
 
+		// 新しいタブへ切り替え
+		for (String handle : WebDriverUtils.webDriver.getWindowHandles()) {
+			if (!handle.equals(originalTab)) {
+				WebDriverUtils.webDriver.switchTo().window(handle);
+				break;
+			}
+		}
+
 		// FAQ画面へ遷移
-		WebDriverUtils.goTo("http://localhost:8080/lms/faq");
+		WebDriverUtils.webDriver.get("http://localhost:8080/lms/faq");
 
 		assertEquals("よくある質問 | LMS", WebDriverUtils.webDriver.getTitle());
 
-		// エビデンス取得
 		WebDriverUtils.getEvidence(this);
 	}
 }

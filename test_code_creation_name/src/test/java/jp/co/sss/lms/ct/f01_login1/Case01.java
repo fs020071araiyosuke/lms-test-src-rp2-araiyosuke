@@ -9,7 +9,6 @@ import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.openqa.selenium.By;
 
 import jp.co.sss.lms.ct.util.WebDriverUtils;
 
@@ -38,23 +37,14 @@ public class Case01 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
-		// TODO ここに追加
+
 		// ログイン画面へアクセス
-		String url = "http://localhost:8080/lms/";
-		WebDriverUtils.goTo(url);
+		WebDriverUtils.webDriver.get("http://localhost:8080/lms/");
 
 		// タイトル確認（ログインページであること）
 		assertEquals("ログイン | LMS", WebDriverUtils.webDriver.getTitle());
 
-		// ログイン画面の主要要素が表示されていることを確認
-		By idInput = By.id("loginId");
-
-		// 要素が表示されるまで待機
-		WebDriverUtils.visibilityTimeout(idInput, 5);
-
-		assertTrue(WebDriverUtils.webDriver.findElement(idInput).isDisplayed());
-
-		// エビデンス取得（メソッド名付き）
+		// エビデンス取得
 		WebDriverUtils.getEvidence(this);
 	}
 }

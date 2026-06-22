@@ -37,12 +37,9 @@ public class Case03 {
 	@Order(1)
 	@DisplayName("テスト01 トップページURLでアクセス")
 	void test01() {
-
-		// ログイン画面へアクセス
-		WebDriverUtils.goTo("http://localhost:8080/lms/");
-
-		// タイトル確認
+		WebDriverUtils.webDriver.get("http://localhost:8080/lms/");
 		assertEquals("ログイン | LMS", WebDriverUtils.webDriver.getTitle());
+		WebDriverUtils.getEvidence(this);
 	}
 
 	@Test
@@ -69,7 +66,7 @@ public class Case03 {
 		loginBtnElem.click();
 
 		// コース詳細画面へ遷移
-		WebDriverUtils.goTo("http://localhost:8080/lms/course/detail");
+		WebDriverUtils.webDriver.get("http://localhost:8080/lms/course/detail");
 
 		// タイトル確認
 		assertEquals("コース詳細 | LMS", WebDriverUtils.webDriver.getTitle());
