@@ -65,8 +65,9 @@ public class Case03 {
 		pwElem.sendKeys("Yousuke6");
 		loginBtnElem.click();
 
-		// コース詳細画面へ遷移
-		WebDriverUtils.webDriver.get("http://localhost:8080/lms/course/detail");
+		//自動遷移後の画面要素を待機（コース詳細画面の要素チェック）
+		By courseHeader = By.xpath("//li[@class='active' and contains(text(),'コース詳細')]");
+		WebDriverUtils.visibilityTimeout(courseHeader, 5);
 
 		// タイトル確認
 		assertEquals("コース詳細 | LMS", WebDriverUtils.webDriver.getTitle());

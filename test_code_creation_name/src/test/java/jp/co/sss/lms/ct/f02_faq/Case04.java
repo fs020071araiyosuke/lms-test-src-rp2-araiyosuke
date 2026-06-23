@@ -61,7 +61,10 @@ public class Case04 {
 		pwElem.sendKeys("Yousuke6");
 		loginBtnElem.click();
 
-		WebDriverUtils.webDriver.get("http://localhost:8080/lms/course/detail");
+		//自動遷移後の画面要素を待機（コース詳細画面の要素チェック）
+		By courseHeader = By.xpath("//li[@class='active' and contains(text(),'コース詳細')]");
+		WebDriverUtils.visibilityTimeout(courseHeader, 5);
+
 		assertEquals("コース詳細 | LMS", WebDriverUtils.webDriver.getTitle());
 	}
 
@@ -81,7 +84,6 @@ public class Case04 {
 		WebElement helpButtonElem = WebDriverUtils.webDriver.findElement(helpButton);
 		helpButtonElem.click();
 
-		WebDriverUtils.webDriver.get("http://localhost:8080/lms/help");
 		assertEquals("ヘルプ | LMS", WebDriverUtils.webDriver.getTitle());
 	}
 
@@ -97,7 +99,7 @@ public class Case04 {
 		// 現在のタブを記録
 		String originalTab = WebDriverUtils.webDriver.getWindowHandle();
 
-		// FAQリンクをクリック（別タブで開く）
+		// FAQリンクをクリック
 		WebElement faqLinkElem = WebDriverUtils.webDriver.findElement(faqLink);
 		faqLinkElem.click();
 
@@ -110,8 +112,6 @@ public class Case04 {
 		}
 
 		// FAQ画面へ遷移
-		WebDriverUtils.webDriver.get("http://localhost:8080/lms/faq");
-
 		assertEquals("よくある質問 | LMS", WebDriverUtils.webDriver.getTitle());
 
 		WebDriverUtils.getEvidence(this);
