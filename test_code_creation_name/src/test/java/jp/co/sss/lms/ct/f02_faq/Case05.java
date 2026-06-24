@@ -3,6 +3,8 @@ package jp.co.sss.lms.ct.f02_faq;
 import static jp.co.sss.lms.ct.util.WebDriverUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -131,8 +133,8 @@ public class Case05 {
 		WebElement keywordElem = WebDriverUtils.webDriver.findElement(keywordInput);
 		WebElement searchBtnElem = WebDriverUtils.webDriver.findElement(searchButton);
 
-		// 検索キーワード
-		String keyword = "セルフ";
+		// キーワードを入力
+		String keyword = System.getProperty("faq.keyword", "");
 
 		keywordElem.clear();
 		keywordElem.sendKeys(keyword);
@@ -140,6 +142,20 @@ public class Case05 {
 		// 検索実行
 		searchBtnElem.click();
 
+		assertEquals("よくある質問 | LMS", WebDriverUtils.webDriver.getTitle());
+
+		// 検索結果の検証
+		By questionTitle = By.cssSelector("dl[id^='question-h'] dt");
+		List<WebElement> questionList = WebDriverUtils.webDriver.findElements(questionTitle);
+
+		By noDataMessage = By.xpath("//*[contains(text(),'データが登録されていません')]");
+
+		if (questionList.isEmpty()) {
+			assertTrue(WebDriverUtils.webDriver.findElement(noDataMessage).isDisplayed());
+		} else {
+			questionList.forEach(q -> assertTrue(q.getText().contains(keyword)));
+		}
+		// エビデンス取得
 		WebDriverUtils.getEvidence(this);
 	}
 }
