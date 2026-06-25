@@ -133,8 +133,8 @@ public class Case05 {
 		WebElement keywordElem = WebDriverUtils.webDriver.findElement(keywordInput);
 		WebElement searchBtnElem = WebDriverUtils.webDriver.findElement(searchButton);
 
-		// キーワードを入力
-		String keyword = System.getProperty("faq.keyword", "");
+		//文字列検索
+		String keyword = "";
 
 		keywordElem.clear();
 		keywordElem.sendKeys(keyword);
@@ -144,18 +144,29 @@ public class Case05 {
 
 		assertEquals("よくある質問 | LMS", WebDriverUtils.webDriver.getTitle());
 
-		// 検索結果の検証
+		// 質問タイトル
 		By questionTitle = By.cssSelector("dl[id^='question-h'] dt");
 		List<WebElement> questionList = WebDriverUtils.webDriver.findElements(questionTitle);
 
+		// 「データが登録されていません。」の表示
 		By noDataMessage = By.xpath("//*[contains(text(),'データが登録されていません')]");
 
+		// 検索結果が0件の場合
 		if (questionList.isEmpty()) {
-			assertTrue(WebDriverUtils.webDriver.findElement(noDataMessage).isDisplayed());
-		} else {
-			questionList.forEach(q -> assertTrue(q.getText().contains(keyword)));
+			WebElement message = WebDriverUtils.webDriver.findElement(noDataMessage);
+
+			assertTrue(message.isDisplayed(), "「データが登録されていません。」が表示されていません。");
+			assertEquals("データが登録されていません。", message.getText(),
+					"表示メッセージが期待値と一致しません。");
 		}
-		// エビデンス取得
+		// 検索結果がある場合にキーワード一致の検証
+		else {
+			for (WebElement q : questionList) {
+				assertTrue(
+						q.getText().contains(keyword),
+						"キーワードを含まない質問があります: " + q.getText());
+			}
+		}
 		WebDriverUtils.getEvidence(this);
 	}
 }

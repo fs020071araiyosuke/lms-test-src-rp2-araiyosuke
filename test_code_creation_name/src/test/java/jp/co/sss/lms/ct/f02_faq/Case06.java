@@ -137,6 +137,8 @@ public class Case06 {
 		//カテゴリを1件ずつクリックして検証
 		for (int i = 0; i < categoryLinks.size(); i++) {
 
+			//再取得
+			categoryLinks = WebDriverUtils.webDriver.findElements(categoryLinksSelector);
 			WebElement category = categoryLinks.get(i);
 
 			//スクロールしてクリック可能にする
@@ -165,9 +167,6 @@ public class Case06 {
 			}
 
 			WebDriverUtils.getEvidence(this);
-
-			//再取得（DOM が更新されるため）
-			categoryLinks = WebDriverUtils.webDriver.findElements(categoryLinksSelector);
 		}
 	}
 
@@ -194,7 +193,7 @@ public class Case06 {
 		//質問を1件ずつクリックして回答を確認
 		for (int i = 0; i < questionList.size(); i++) {
 
-			//DOM 更新の可能性があるため毎回再取得
+			//再取得
 			questionList = WebDriverUtils.webDriver.findElements(questionItem);
 			WebElement question = questionList.get(i);
 
@@ -203,6 +202,9 @@ public class Case06 {
 					.executeScript("arguments[0].scrollIntoView({block: 'center'});", question);
 
 			Thread.sleep(500);
+
+			// 質問文を取得
+			String questionText = question.getText();
 
 			//質問クリック
 			question.click();
@@ -217,6 +219,13 @@ public class Case06 {
 
 			WebElement answerElem = answerList.get(i);
 			assertTrue(answerElem.isDisplayed(), "回答が表示されていません。");
+
+			// 回答文を取得
+			String answerText = answerElem.getText();
+
+			// 質問文が回答文に含まれているか検証
+			assertTrue(answerText.contains(questionText),
+					"回答文に質問文の一部が含まれていません。\n質問: " + questionText + "\n回答: " + answerText);
 
 			//エビデンス取得
 			WebDriverUtils.getEvidence(this);
